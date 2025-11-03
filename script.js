@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_URL =
+  const PRIMARY_API_URL =
     "https://rawcdn.githack.com/IridiumIO/CompactGUI/a8a8869ce61e200d542f090d47fab5b0107f0233/database.json";
+  const FALLBACK_API_URL =
+    "https://raw.githubusercontent.com/IridiumIO/CompactGUI/refs/heads/database/database.json";
   const COMPRESSION_TYPES = ["XPRESS 4K", "XPRESS 8K", "XPRESS 16K", "LZX"];
   const CACHE_KEY = "compactGuiData";
   const CACHE_TIMESTAMP_KEY = "compactGuiTimestamp";
@@ -43,17 +45,50 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   };
 
+  const fetchDatabase = async () => {
+    const attemptFetch = async (url) => {
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      return { data, source: url };
+    };
+
+    try {
+      return await attemptFetch(PRIMARY_API_URL);
+    } catch (primaryError) {
+      console.warn(
+        "Primary database fetch failed, trying fallback.",
+        primaryError
+      );
+      try {
+        const fallbackResult = await attemptFetch(FALLBACK_API_URL);
+        console.info("Loaded database from fallback source.", FALLBACK_API_URL);
+        return fallbackResult;
+      } catch (fallbackError) {
+        console.error("Fallback database fetch failed.", fallbackError);
+        const aggregatedError = new Error(
+          "Failed to fetch database from both primary and fallback sources."
+        );
+        aggregatedError.primaryError = primaryError;
+        aggregatedError.fallbackError = fallbackError;
+        throw aggregatedError;
+      }
+    }
+  };
+
   const forceFetchData = async () => {
     loader.style.display = "block";
     loader.textContent = "Fetching latest data...";
     refreshBtn.classList.add("loading");
     try {
-      const response = await fetch(API_URL);
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      allGames = await response.json();
+      const { data, source } = await fetchDatabase();
+      allGames = data;
       localStorage.setItem(CACHE_KEY, JSON.stringify(allGames));
       localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+      if (source === FALLBACK_API_URL) {
+        console.info("Caching fallback data source for offline use.");
+      }
       processAndRender();
     } catch (error) {
       loader.textContent = "Failed to fetch new data.";
