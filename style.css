@@ -391,3 +391,20 @@ input[type="search"] {
   filter: none;
   /* White icon on active blue button */
 }
+
+.site-footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.site-footer a {
+  color: inherit;
+  text-decoration: underline;
+  transition: color 0.2s ease-in-out;
+}
+
+.site-footer a:hover {
+  color: var(--primary-color);
+}
