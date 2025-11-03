@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CompactGUI Game Database</title>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1>CompactGUI Game Compression Database</h1>
+        <p>An interactive front-end to explore game compression results.</p>
+      </header>
+      <div class="controls">
+        <div class="control-group">
+          <label for="search"> Search: </label>
+          <input id="search" placeholder="e.g., Counter-Strike" type="search" />
+        </div>
+        <div class="control-group">
+          <label for="sort"> Sort By: </label>
+          <select id="sort">
+            <option value="name_asc">Name (A-Z)</option>
+            <option value="name_desc">Name (Z-A)</option>
+            <option value="size_desc">Original Size (High-Low)</option>
+            <option value="size_asc">Original Size (Low-High)</option>
+            <optgroup label="XPRESS 4K">
+              <option value="xpress4k_size_asc">Size (Low-High)</option>
+              <option value="xpress4k_ratio_desc">Savings (High-Low)</option>
+            </optgroup>
+            <optgroup label="XPRESS 8K">
+              <option value="xpress8k_size_asc">Size (Low-High)</option>
+              <option value="xpress8k_ratio_desc">Savings (High-Low)</option>
+            </optgroup>
+            <optgroup label="XPRESS 16K">
+              <option value="xpress16k_size_asc">Size (Low-High)</option>
+              <option value="xpress16k_ratio_desc">Savings (High-Low)</option>
+            </optgroup>
+            <optgroup label="LZX">
+              <option value="lzx_size_asc">Size (Low-High)</option>
+              <option value="lzx_ratio_desc">Savings (High-Low)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="show"> Show: </label>
+          <select id="show">
+            <option selected="" value="32">32</option>
+            <option value="64">64</option>
+            <option value="128">128</option>
+            <option value="256">256</option>
+            <option value="512">512</option>
+          </select>
+        </div>
+        <div class="control-group view-toggle">
+          <label> View: </label>
+          <button id="view-grid" title="Grid View">
+            <img alt="Grid View" src="icons/view-grid.svg" />
+          </button>
+          <button id="view-list" title="List View">
+            <img alt="List View" src="icons/view-list.svg" />
+          </button>
+          <button id="view-compact" title="Compact View">
+            <img alt="Compact View" src="icons/view-compact.svg" />
+          </button>
+          <button id="refresh-db" title="Force Refresh Database">
+            <img alt="Force Refresh Database" src="icons/refresh.svg" />
+          </button>
+        </div>
+      </div>
+      <div id="loader">Loading game data...</div>
+      <div id="game-grid"></div>
+      <div id="pagination-controls"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
